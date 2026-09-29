@@ -1,10 +1,20 @@
 package routers
 
+
 import (
-	"event-explorer/controllers"
 	beego "github.com/beego/beego/v2/server/web"
+
+	"event-explorer/controllers"
 )
 
-func init() {
-    beego.Router("/", &controllers.MainController{})
+
+func init(){
+
+
+beego.Router(
+"/",
+&controllers.HomeController{},
+)
+
+
 }
