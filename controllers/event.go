@@ -1,34 +1,41 @@
 package controllers
 
-
 import (
 	beego "github.com/beego/beego/v2/server/web"
+
+	"event-explorer/services"
 )
 
-
-
-type EventController struct{
-
+type EventController struct {
 	beego.Controller
-
 }
 
+func (c *EventController) Get() {
 
+	city := c.GetString("city")
 
-func (c *EventController)Get(){
+	country := c.GetString("countryCode")
 
+	if city == "" || country == "" {
+		c.Data["Error"] = "Please select a city"
+		c.TplName = "listing.tpl"
+		return
 
-c.TplName="listing.tpl"
+	}
 
+	events, err := services.GetCityEvents(city, country)
 
-}
+	if err != nil {
+		c.Data["Error"] = err.Error()
 
+	}
 
+	c.Data["City"] = city
 
-func (c *EventController)GetDetails(){
+	c.Data["Music"] = events.Music
 
+	c.Data["Sports"] = events.Sports
 
-c.TplName="details.tpl"
-
+	c.TplName = "listing.tpl"
 
 }

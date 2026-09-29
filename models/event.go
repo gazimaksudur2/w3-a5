@@ -1,30 +1,25 @@
 package models
 
-
 type Event struct {
+	ID string `json:"id"`
 
-	ID string
+	Name string `json:"name"`
 
-	Name string
+	Image string `json:"image"`
 
-	Image string
+	Date string `json:"date"`
 
-	Date string
+	Venue string `json:"venue"`
 
-	Venue string
+	Description string `json:"description"`
 
-	Description string
-
-	TicketURL string
-
+	TicketURL string `json:"ticketUrl"`
 }
 
 type EventResponse struct {
-
 	Music []Event
 
 	Sports []Event
 
-	Error error
-
+	Errors []error
 }

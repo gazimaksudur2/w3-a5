@@ -1,28 +1,15 @@
-<!DOCTYPE html>
+<form action="/events" method="GET">
 
-<html>
-
-<head>
-
-<title>
-Event Explorer
-</title>
-
-</head>
-
-
-<body>
-
-
-<h1>
-Event Explorer
-</h1>
-
-
-<form>
 
 <input 
-placeholder="Search city"
+name="city"
+placeholder="City"
+/>
+
+
+<input 
+name="countryCode"
+placeholder="Country Code"
 />
 
 
@@ -32,9 +19,3 @@ Search
 
 
 </form>
-
-
-</body>
-
-
-</html>
