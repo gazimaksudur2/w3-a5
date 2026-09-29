@@ -1,45 +1,88 @@
 {{template "partials/header.tpl" .}}
 
 
-<h2>
-    Search Events
+<section class="text-center py-20">
+
+
+<h2 class="text-5xl font-bold tracking-tight">
+
+Discover Events Around You
+
 </h2>
 
 
-<form action="/events" method="GET">
+<p class="mt-5 text-lg text-gray-500">
+
+Find concerts, sports and experiences in your city.
+
+</p>
 
 
-<input 
-    id="cityInput"
-    name="city"
-    placeholder="Search city"
-    autocomplete="off"
-/>
 
-
-<div id="suggestions"></div>
-
-
-<input 
-    type="hidden"
-    id="placeId"
-    name="placeId"
-/>
+<form 
+action="/events"
+method="GET"
+class="mt-10 max-w-xl mx-auto bg-white p-6 rounded-3xl shadow-xl"
+>
 
 
 <input
-    type="hidden"
-    id="countryCode"
-    name="countryCode"
+id="cityInput"
+name="city"
+placeholder="Search city..."
+class="
+w-full
+px-5
+py-4
+rounded-xl
+border
+focus:ring-2
+focus:ring-blue-500
+outline-none
+"
 />
 
 
-<button type="submit">
-    Search
+
+<div id="suggestions"
+class="text-left mt-2">
+</div>
+
+
+
+<input
+type="hidden"
+name="countryCode"
+id="countryCode"
+/>
+
+
+
+<button
+
+class="
+mt-5
+w-full
+bg-blue-600
+hover:bg-blue-700
+text-white
+font-semibold
+py-4
+rounded-xl
+transition
+"
+
+>
+
+Search Events
+
 </button>
 
 
 </form>
+
+
+</section>
 
 
 

@@ -1,144 +1,76 @@
-{{template "partials/header.tpl" .}}
+<div class="
+bg-white
+rounded-3xl
+shadow-md
+overflow-hidden
+hover:shadow-xl
+transition
+">
 
 
-<h2>
-    Events in {{.City}}
-</h2>
+<img
+src="{{.Image}}"
+class="
+w-full
+h-60
+object-cover
+"
+/>
 
 
-{{if .Error}}
+<div class="p-6">
 
-<p class="error-message">
-    {{.Error}}
+
+<h4 class="
+text-xl
+font-bold
+">
+
+{{.Name}}
+
+</h4>
+
+
+<div class="mt-4 text-gray-600 space-y-2">
+
+
+<p>
+📅 {{.Date}}
 </p>
 
-{{end}}
 
-
-
-<h3>
-    Music Events
-</h3>
-
-
-{{range .Music}}
-
-<div class="event-card">
-
-
-    <h4>
-        {{.Name}}
-    </h4>
-
-
-    {{if .Image}}
-
-    <img 
-        src="{{.Image}}"
-        width="200"
-        alt="{{.Name}}"
-    >
-
-    {{end}}
-
-
-
-    <p>
-        <strong>Date:</strong>
-        {{.Date}}
-    </p>
-
-
-    <p>
-        <strong>Venue:</strong>
-        {{.Venue}}
-    </p>
-
-
-
-    <a href="/events/{{.ID}}">
-        View Details
-    </a>
+<p>
+📍 {{.Venue}}
+</p>
 
 
 </div>
 
 
-<hr>
 
+<a
 
-{{else}}
+href="/events/{{.ID}}"
 
-<p>
-    No music events found
-</p>
+class="
+inline-block
+mt-5
+bg-blue-600
+text-white
+px-5
+py-3
+rounded-xl
+hover:bg-blue-700
+"
 
-{{end}}
+>
 
+View Details →
 
-
-
-
-<h3>
-    Sports Events
-</h3>
-
-
-{{range .Sports}}
-
-<div class="event-card">
-
-
-    <h4>
-        {{.Name}}
-    </h4>
-
-
-    {{if .Image}}
-
-    <img 
-        src="{{.Image}}"
-        width="200"
-        alt="{{.Name}}"
-    >
-
-    {{end}}
-
-
-
-    <p>
-        <strong>Date:</strong>
-        {{.Date}}
-    </p>
-
-
-    <p>
-        <strong>Venue:</strong>
-        {{.Venue}}
-    </p>
-
-
-
-    <a href="/events/{{.ID}}">
-        View Details
-    </a>
+</a>
 
 
 </div>
 
 
-<hr>
-
-
-{{else}}
-
-<p>
-    No sports events found
-</p>
-
-
-{{end}}
-
-
-
-{{template "partials/footer.tpl" .}}
+</div>

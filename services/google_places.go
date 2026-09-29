@@ -1,11 +1,12 @@
 package services
 
-
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"net/url"
 
 	"event-explorer/config"
 	"event-explorer/models"
@@ -16,19 +17,23 @@ import (
 func Autocomplete(
 	input string,
 	sessionToken string,
-) ([]models.LocationSuggestion,error){
+) ([]models.LocationSuggestion, error) {
+
+
+	if len(input) < 2 {
+		return []models.LocationSuggestion{}, nil
+	}
+
 
 
 	var result struct {
 
-		Suggestions []struct{
+		Suggestions []struct {
 
-			PlacePrediction struct{
+			PlacePrediction struct {
 
-				Text struct{
-
+				Text struct {
 					Text string `json:"text"`
-
 				} `json:"text"`
 
 
@@ -36,40 +41,50 @@ func Autocomplete(
 
 			} `json:"placePrediction"`
 
-
 		} `json:"suggestions"`
 
 	}
 
 
 
-	body:=map[string]interface{}{
+	body := map[string]interface{}{
 
-		"input":input,
+		"input": input,
 
-		"includedPrimaryTypes":[]string{
-			"cities",
+
+		"includedPrimaryTypes": []string{
+			"(cities)",
 		},
 
-		"sessionToken":sessionToken,
+
+		"sessionToken": sessionToken,
 
 	}
 
 
-	jsonBody,_:=json.Marshal(body)
+
+	jsonBody, err := json.Marshal(body)
+
+
+	if err != nil {
+		return nil, err
+	}
 
 
 
-	req,err:=http.NewRequest(
+
+	req, err := http.NewRequest(
 		"POST",
 		"https://places.googleapis.com/v1/places:autocomplete",
 		bytes.NewBuffer(jsonBody),
 	)
 
 
-	if err!=nil{
-		return nil,err
+
+	if err != nil {
+		return nil, err
 	}
+
 
 
 
@@ -77,6 +92,7 @@ func Autocomplete(
 		"Content-Type",
 		"application/json",
 	)
+
 
 
 	req.Header.Set(
@@ -93,23 +109,40 @@ func Autocomplete(
 
 
 
-	resp,err:=HTTPClient.Do(req)
+
+	resp, err := HTTPClient.Do(req)
 
 
-	if err!=nil{
-		return nil,err
+
+	if err != nil {
+		return nil, err
 	}
+
 
 
 	defer resp.Body.Close()
 
 
 
-	if resp.StatusCode!=200{
+	if resp.StatusCode != http.StatusOK {
+
+
+		body, _ := io.ReadAll(resp.Body)
+
+
+		fmt.Println(
+			"Google autocomplete error:",
+		)
+
+		fmt.Println(
+			string(body),
+		)
+
+
 
 		return nil,
 		fmt.Errorf(
-			"google status %d",
+			"google autocomplete status: %d",
 			resp.StatusCode,
 		)
 
@@ -117,18 +150,28 @@ func Autocomplete(
 
 
 
-	json.NewDecoder(resp.Body).Decode(&result)
+
+	err=json.NewDecoder(
+		resp.Body,
+	).Decode(&result)
 
 
 
-	suggestions:=[]models.LocationSuggestion{}
+	if err != nil {
+		return nil, err
+	}
 
 
 
-	for _,item:=range result.Suggestions{
+
+	suggestions := []models.LocationSuggestion{}
 
 
-		suggestions=append(
+
+	for _, item := range result.Suggestions {
+
+
+		suggestions = append(
 			suggestions,
 			models.LocationSuggestion{
 
@@ -138,12 +181,191 @@ func Autocomplete(
 
 				PlaceID:
 				item.PlacePrediction.PlaceID,
+
 			},
 		)
 
 	}
 
 
-	return suggestions,nil
+
+	return suggestions, nil
+
+}
+
+
+
+
+
+
+
+func GetPlaceDetails(
+	placeID string,
+	sessionToken string,
+)(models.Location,error){
+
+
+	var location models.Location
+
+
+
+	apiURL := "https://places.googleapis.com/v1/places/" + url.PathEscape(placeID)
+
+
+
+	if sessionToken != "" {
+
+		apiURL += "?sessionToken=" + url.QueryEscape(sessionToken)
+
+	}
+
+
+
+
+	req, err := http.NewRequest(
+		"GET",
+		apiURL,
+		nil,
+	)
+
+
+
+	if err != nil {
+		return location, err
+	}
+
+
+
+
+	req.Header.Set(
+		"X-Goog-Api-Key",
+		config.GoogleAPIKey(),
+	)
+
+
+
+	req.Header.Set(
+		"X-Goog-FieldMask",
+		"addressComponents",
+	)
+
+
+
+
+
+	resp, err := HTTPClient.Do(req)
+
+
+
+	if err != nil {
+		return location, err
+	}
+
+
+
+	defer resp.Body.Close()
+
+
+
+
+	if resp.StatusCode != http.StatusOK {
+
+
+		body,_ := io.ReadAll(resp.Body)
+
+
+		fmt.Println(
+			"Google details error:",
+		)
+
+
+		fmt.Println(
+			string(body),
+		)
+
+
+
+		return location,
+		fmt.Errorf(
+			"google details status: %d",
+			resp.StatusCode,
+		)
+
+	}
+
+
+
+
+
+	var result struct {
+
+
+		AddressComponents []struct {
+
+
+			LongText string `json:"longText"`
+
+
+			ShortText string `json:"shortText"`
+
+
+			Types []string `json:"types"`
+
+
+		} `json:"addressComponents"`
+
+
+	}
+
+
+
+
+	err=json.NewDecoder(
+		resp.Body,
+	).Decode(&result)
+
+
+
+	if err != nil {
+		return location, err
+	}
+
+
+
+
+	for _, component := range result.AddressComponents {
+
+
+		for _, t := range component.Types {
+
+
+
+			switch t {
+
+
+
+			case "locality":
+
+				location.City =
+					component.LongText
+
+
+
+			case "country":
+
+				location.CountryCode =
+					component.ShortText
+
+
+			}
+
+
+		}
+
+	}
+
+
+
+	return location,nil
 
 }
