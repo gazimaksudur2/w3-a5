@@ -20,7 +20,7 @@ func init() {
 
 	beego.Router(
 		"/events/:eventId",
-		&controllers.EventController{},
+		&controllers.DetailsController{},
 	)
 
 	beego.Router(

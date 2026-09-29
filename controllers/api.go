@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"event-explorer/services"
+
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -8,12 +10,33 @@ type APIController struct {
 	beego.Controller
 }
 
-func (c *APIController) Autocomplete() {
+func (c *APIController) Autocomplete(){
 
-	c.Data["json"] = map[string]string{
+	input:=c.GetString("input")
 
-		"message": "autocomplete endpoint working",
+	session:=c.GetString("sessionToken")
+
+
+	results,err := services.Autocomplete(
+		input,
+		session,
+	)
+
+
+	if err!=nil{
+
+		c.Data["json"]=map[string]string{
+			"error":err.Error(),
+		}
+
+		c.ServeJSON()
+		return
+
 	}
+
+
+
+	c.Data["json"]=results
 
 	c.ServeJSON()
 

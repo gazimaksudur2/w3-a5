@@ -12,3 +12,103 @@ button{
 padding:10px;
 
 }
+
+.event-details {
+
+    max-width: 700px;
+    margin: auto;
+
+}
+
+
+.event-image {
+
+    width: 100%;
+    max-width: 600px;
+    border-radius: 8px;
+
+}
+
+
+.event-info {
+
+    margin-top:20px;
+
+}
+
+
+.actions {
+
+    margin-top:30px;
+
+    display:flex;
+
+    gap:20px;
+
+}
+
+
+
+.ticket-button {
+
+    background:#007bff;
+
+    color:white;
+
+    padding:10px 15px;
+
+    text-decoration:none;
+
+    border-radius:5px;
+
+}
+
+
+
+.error-message {
+
+    padding:20px;
+
+    background:#ffe5e5;
+
+}
+
+.event-card {
+
+    border:1px solid #ddd;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    border-radius:8px;
+
+}
+
+
+.event-card img {
+
+    max-width:300px;
+
+    height:auto;
+
+}
+
+
+.event-card a {
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    padding:8px 12px;
+
+    background:#007bff;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:5px;
+
+}
