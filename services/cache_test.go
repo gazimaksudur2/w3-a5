@@ -7,47 +7,35 @@ import (
 	"event-explorer/models"
 )
 
-
 func TestCacheHit(t *testing.T) {
-
 
 	cache :=
 		NewEventCache()
-
 
 	events :=
 		[]models.Event{
 
 			{
-				ID:"123",
-				Name:"Test Event",
+				ID:   "123",
+				Name: "Test Event",
 			},
-
 		}
-
-
 
 	cache.Set(
 		"toronto_CA_Music",
 		events,
 	)
 
-
-
-	result,ok :=
+	result, ok :=
 		cache.Get(
 			"toronto_CA_Music",
 		)
-
-
 
 	if !ok {
 
 		t.Fatal("expected cache hit")
 
 	}
-
-
 
 	if result[0].ID != "123" {
 
@@ -57,40 +45,28 @@ func TestCacheHit(t *testing.T) {
 
 }
 
-
-
 func TestCacheExpiry(t *testing.T) {
-
 
 	cache :=
 		&EventCache{
 
 			items: map[string]CacheItem{
 
-				"expired":
-				{
+				"expired": {
 
-					Events:nil,
+					Events: nil,
 
-					ExpiresAt:
-						time.Now().Add(
-							-1*time.Minute,
-						),
-
+					ExpiresAt: time.Now().Add(
+						-1 * time.Minute,
+					),
 				},
-
 			},
-
 		}
 
-
-
-	_,ok :=
+	_, ok :=
 		cache.Get(
 			"expired",
 		)
-
-
 
 	if ok {
 

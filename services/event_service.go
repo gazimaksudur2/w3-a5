@@ -8,6 +8,14 @@ import (
 	"event-explorer/models"
 )
 
+type eventFetchResult struct {
+	category string
+
+	events []models.Event
+
+	err error
+}
+
 func GetCityEvents(
 	ctx context.Context,
 	provider EventProvider,
@@ -17,7 +25,11 @@ func GetCityEvents(
 
 	var response models.EventResponse
 
-	g, ctx := errgroup.WithContext(ctx)
+	resultChannel :=
+		make(chan eventFetchResult, 2)
+
+	g, ctx :=
+		errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 
@@ -29,14 +41,14 @@ func GetCityEvents(
 				"Music",
 			)
 
-		if err != nil {
-			response.Errors =
-				append(response.Errors, err)
+		resultChannel <- eventFetchResult{
 
-			return nil
+			category: "Music",
+
+			events: events,
+
+			err: err,
 		}
-
-		response.Music = events
 
 		return nil
 
@@ -52,22 +64,57 @@ func GetCityEvents(
 				"Sports",
 			)
 
-		if err != nil {
+		resultChannel <- eventFetchResult{
 
-			response.Errors =
-				append(response.Errors, err)
+			category: "Sports",
 
-			return nil
+			events: events,
+
+			err: err,
 		}
-
-		response.Sports = events
 
 		return nil
 
 	})
 
-	err := g.Wait()
+	go func() {
 
-	return response, err
+		g.Wait()
+
+		close(resultChannel)
+
+	}()
+
+	for result := range resultChannel {
+
+		if result.err != nil {
+
+			response.Errors =
+				append(
+					response.Errors,
+					result.err,
+				)
+
+			continue
+
+		}
+
+		switch result.category {
+
+		case "Music":
+
+			response.Music =
+				result.events
+
+		case "Sports":
+
+			response.Sports =
+				result.events
+
+		}
+
+	}
+
+	return response, nil
 
 }

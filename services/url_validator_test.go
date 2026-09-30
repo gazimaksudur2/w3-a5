@@ -2,17 +2,12 @@ package services
 
 import "testing"
 
-
-
-func TestValidTicketURL(t *testing.T){
-
+func TestValidTicketURL(t *testing.T) {
 
 	valid :=
 		IsValidTicketURL(
 			"https://www.ticketmaster.com/event123",
 		)
-
-
 
 	if !valid {
 
@@ -24,19 +19,12 @@ func TestValidTicketURL(t *testing.T){
 
 }
 
-
-
-
-
-func TestInvalidTicketURL(t *testing.T){
-
+func TestInvalidTicketURL(t *testing.T) {
 
 	invalid :=
 		IsValidTicketURL(
 			"https://evil.com/fake",
 		)
-
-
 
 	if invalid {
 
