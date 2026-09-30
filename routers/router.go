@@ -35,4 +35,9 @@ func init() {
 		"get:GetLocation",
 	)
 
+	beego.Router(
+		"/redirect/:eventId",
+		&controllers.RedirectController{},
+	)
+
 }

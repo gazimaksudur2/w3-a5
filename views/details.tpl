@@ -46,7 +46,7 @@
 
         <div class="mt-10 flex flex-col sm:flex-row gap-4">
             <a
-                href="{{.Event.TicketURL}}"
+                href="/redirect/{{.Event.ID}}"
                 target="_blank"
                 class="flex-1 text-center py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition"
             >
