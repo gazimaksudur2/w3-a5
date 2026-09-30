@@ -23,7 +23,8 @@ func (c *EventController) Get() {
 
 	}
 
-	events, err := services.GetCityEvents(city, country)
+	provider := services.TicketmasterProvider{}
+	events, err := services.GetCityEvents(provider, city, country)
 
 	if err != nil {
 		c.Data["Error"] = err.Error()

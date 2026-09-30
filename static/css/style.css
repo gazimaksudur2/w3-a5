@@ -58,3 +58,25 @@
          line-height:1.2;
     }
 }
+
+#suggestions {
+    position: absolute;
+    z-index: 99999 !important;
+    animation: dropdownFade 0.2s ease-out;
+}
+
+
+@keyframes dropdownFade {
+
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}

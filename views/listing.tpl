@@ -69,12 +69,6 @@
         </div>
 
         {{end}}
-
-        <div class="col-span-full bg-slate-100 rounded-3xl p-10 text-center text-slate-500">
-            No sports events found.
-        </div>
-
-        {{end}}
     </div>
 </section>
 

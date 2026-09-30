@@ -13,6 +13,7 @@ type EventResult struct {
 }
 
 func GetCityEvents(
+	provider EventProvider,
 	city string,
 	country string,
 ) (models.EventResponse, error) {

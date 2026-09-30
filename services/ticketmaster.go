@@ -42,6 +42,20 @@ type ticketmasterResponse struct {
 	} `json:"_embedded"`
 }
 
+func (t TicketmasterProvider) FetchEvents(
+	city string,
+	country string,
+	category string,
+) ([]models.Event, error) {
+
+	return FetchEvents(
+		city,
+		country,
+		category,
+	)
+
+}
+
 func FetchEvents(
 	city string,
 	country string,
@@ -89,7 +103,7 @@ func FetchEvents(
 	)
 
 	apiURL :=
-		"https://app.ticketmaster.com/discovery/v2/events.json?"+params.Encode()
+		"https://app.ticketmaster.com/discovery/v2/events.json?" + params.Encode()
 
 	response, err :=
 		http.Get(apiURL)
@@ -168,5 +182,15 @@ func FetchEvents(
 	)
 
 	return events, nil
+
+}
+
+type TicketmasterProvider struct{}
+
+func (t TicketmasterProvider) GetEventDetails(
+	eventID string,
+) (models.Event, error) {
+
+	return GetEventDetails(eventID)
 
 }

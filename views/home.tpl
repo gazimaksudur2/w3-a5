@@ -1,11 +1,10 @@
 {{template "partials/header.tpl" .}}
 
-<section class="relative overflow-hidden px-6 sm:px-10 lg:px-16">
+<section class="relative overflow-visible px-6 sm:px-10 lg:px-16">
     <!-- Background decoration -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 -z-10"></div>
 
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 z-10"></div>
-
-    <div class="relative z-20 py-20 text-center">
+    <div class="relative z-10 py-20 text-center">
         <div
             class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-8"
         >
@@ -29,7 +28,7 @@
         <form
             action="/events"
             method="GET"
-            class="mt-12 max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 flex flex-col md:flex-row gap-3"
+            class="relative z-[100] mt-12 max-w-3xl mx-auto bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 flex flex-col md:flex-row gap-3"
         >
             <div class="flex-1 relative">
                 <input
@@ -42,7 +41,7 @@
 
                 <div
                     id="suggestions"
-                    class="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden text-left z-50"
+                    class="absolute left-0 right-0 top-full mt-3 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden text-left z-[99999] max-h-80 overflow-y-auto"
                 ></div>
             </div>
 
