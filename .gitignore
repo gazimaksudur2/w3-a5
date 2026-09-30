@@ -3,5 +3,9 @@
 tmp/
 vendor/
 *.txt
+/bin
+.idea/
+.vscode/
+.DS_Store
 
 event-explorer

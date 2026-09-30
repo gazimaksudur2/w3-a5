@@ -1,76 +1,81 @@
-<div class="
-bg-white
-rounded-3xl
-shadow-md
-overflow-hidden
-hover:shadow-xl
-transition
-">
+{{template "partials/header.tpl" .}}
 
+{{if .Error}}
 
-<img
-src="{{.Image}}"
-class="
-w-full
-h-60
-object-cover
-"
-/>
+<div class="max-w-3xl mx-auto bg-red-50 border border-red-200 rounded-3xl p-8 text-center">
+    <div class="text-5xl mb-4">⚠️</div>
 
+    <h2 class="text-2xl font-bold text-red-700">Something went wrong</h2>
 
-<div class="p-6">
+    <p class="mt-3 text-red-600">{{.Error}}</p>
 
-
-<h4 class="
-text-xl
-font-bold
-">
-
-{{.Name}}
-
-</h4>
-
-
-<div class="mt-4 text-gray-600 space-y-2">
-
-
-<p>
-📅 {{.Date}}
-</p>
-
-
-<p>
-📍 {{.Venue}}
-</p>
-
-
+    <a href="/" class="inline-block mt-6 px-6 py-3 rounded-xl bg-red-600 text-white font-semibold"> Try Again </a>
 </div>
 
+{{end}}
 
+<section class="mb-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <p class="text-blue-600 font-semibold uppercase tracking-wide text-sm">Events</p>
 
-<a
+            <h2 class="text-4xl md:text-5xl font-extrabold mt-2">Events in {{.City}}</h2>
 
-href="/events/{{.ID}}"
+            <p class="mt-3 text-slate-500 text-lg">Discover concerts, sports and experiences happening nearby.</p>
+        </div>
 
-class="
-inline-block
-mt-5
-bg-blue-600
-text-white
-px-5
-py-3
-rounded-xl
-hover:bg-blue-700
-"
+        <div class="px-5 py-3 rounded-full bg-blue-50 text-blue-700 font-semibold">📍 {{.City}}</div>
+    </div>
+</section>
 
->
+{{if .Error}}
 
-View Details →
+<div class="bg-red-100 text-red-700 p-5 rounded-2xl mb-10">{{.Error}}</div>
 
-</a>
+{{end}}
 
+<!-- MUSIC EVENTS -->
 
-</div>
+<section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="text-3xl">🎵</div>
 
+        <h3 class="text-3xl font-bold">Music Events</h3>
+    </div>
 
-</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {{range .Music}} {{template "components/event_card.tpl" .}} {{else}}
+
+        <div class="col-span-full bg-slate-100 rounded-3xl p-10 text-center text-slate-500">No music events found.</div>
+
+        {{end}}
+    </div>
+</section>
+
+<!-- SPORTS EVENTS -->
+
+<section class="mb-16">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="text-3xl">🏟️</div>
+
+        <h3 class="text-3xl font-bold">Sports Events</h3>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {{range .Sports}} {{template "components/event_card.tpl" .}} {{else}}
+
+        <div class="col-span-full bg-slate-100 rounded-3xl p-10 text-center text-slate-500">
+            No sports events found.
+        </div>
+
+        {{end}}
+
+        <div class="col-span-full bg-slate-100 rounded-3xl p-10 text-center text-slate-500">
+            No sports events found.
+        </div>
+
+        {{end}}
+    </div>
+</section>
+
+{{template "partials/footer.tpl" .}}

@@ -1,118 +1,66 @@
-{{template "partials/header.tpl" .}}
+{{template "partials/header.tpl" .}} {{if .Error}}
 
-<div class="
-bg-white
-rounded-3xl
-shadow-xl
-p-8
-max-w-4xl
-mx-auto
-">
-
-{{if .Error}}
-
-<div class="
-bg-red-100
-text-red-700
-p-4
-rounded-xl
-mb-6
-">
-{{.Error}}
-</div>
+<div class="max-w-3xl mx-auto bg-red-100 text-red-700 p-6 rounded-3xl font-medium">{{.Error}}</div>
 
 {{else}}
 
-{{if .Event.Image}}
+<section class="max-w-5xl mx-auto">
+    <!-- Hero Image -->
 
-<img
-src="{{.Event.Image}}"
-alt="{{.Event.Name}}"
-class="
-rounded-2xl
-w-full
-h-96
-object-cover
-"
-/>
+    <div class="relative rounded-3xl overflow-hidden shadow-2xl">
+        <img src="{{.Event.Image}}" alt="{{.Event.Name}}" class="w-full h-[500px] object-cover" />
 
-{{end}}
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
 
+        <div class="absolute bottom-8 left-8 right-8 text-white">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">{{.Event.Name}}</h1>
+        </div>
+    </div>
 
-<h2 class="
-text-4xl
-font-bold
-mt-8
-">
+    <!-- Event Information -->
 
-{{.Event.Name}}
+    <div class="mt-10 bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-10">
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-blue-50 rounded-2xl p-5">
+                <p class="text-sm text-blue-600 font-semibold uppercase tracking-wide">Date</p>
 
-</h2>
+                <p class="mt-2 text-xl font-bold text-slate-800">📅 {{.Event.Date}}</p>
+            </div>
 
+            <div class="bg-indigo-50 rounded-2xl p-5">
+                <p class="text-sm text-indigo-600 font-semibold uppercase tracking-wide">Venue</p>
 
-<div class="
-mt-5
-text-gray-600
-space-y-3
-text-lg
-">
+                <p class="mt-2 text-xl font-bold text-slate-800">📍 {{.Event.Venue}}</p>
+            </div>
+        </div>
 
-<p>
-📅 {{.Event.Date}}
-</p>
+        {{if .Event.Description}}
 
+        <div class="mt-10">
+            <h2 class="text-2xl font-bold mb-4">About this event</h2>
 
-<p>
-📍 {{.Event.Venue}}
-</p>
+            <p class="text-slate-600 leading-relaxed text-lg">{{.Event.Description}}</p>
+        </div>
 
-</div>
+        {{end}}
 
+        <div class="mt-10 flex flex-col sm:flex-row gap-4">
+            <a
+                href="{{.Event.TicketURL}}"
+                target="_blank"
+                class="flex-1 text-center py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition"
+            >
+                🎟 Buy Tickets
+            </a>
 
-{{if .Event.Description}}
+            <a
+                href="/"
+                class="flex-1 text-center py-4 rounded-2xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200 transition"
+            >
+                ← Explore More Events
+            </a>
+        </div>
+    </div>
+</section>
 
-<p class="
-mt-8
-text-gray-700
-leading-relaxed
-">
-
-{{.Event.Description}}
-
-</p>
-
-{{end}}
-
-
-
-<a
-
-href="{{.Event.TicketURL}}"
-
-target="_blank"
-
-class="
-inline-block
-mt-8
-bg-green-600
-hover:bg-green-700
-text-white
-px-8
-py-4
-rounded-xl
-transition
-"
-
->
-
-View Tickets
-
-</a>
-
-
-{{end}}
-
-</div>
-
-
-{{template "partials/footer.tpl" .}}
+{{end}} {{template "partials/footer.tpl" .}}
