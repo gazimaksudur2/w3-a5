@@ -24,7 +24,12 @@ func (c *EventController) Get() {
 	}
 
 	provider := services.TicketmasterProvider{}
-	events, err := services.GetCityEvents(provider, city, country)
+	events, err := services.GetCityEvents(
+		c.Ctx.Request.Context(),
+		provider,
+		city,
+		country,
+	)
 
 	if err != nil {
 		c.Data["Error"] = err.Error()

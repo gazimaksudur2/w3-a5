@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 
 	"fmt"
@@ -43,12 +44,14 @@ type ticketmasterResponse struct {
 }
 
 func (t TicketmasterProvider) FetchEvents(
+	ctx context.Context,
 	city string,
 	country string,
 	category string,
 ) ([]models.Event, error) {
 
 	return FetchEvents(
+		ctx,
 		city,
 		country,
 		category,
@@ -57,6 +60,7 @@ func (t TicketmasterProvider) FetchEvents(
 }
 
 func FetchEvents(
+	ctx context.Context,
 	city string,
 	country string,
 	category string,
@@ -104,8 +108,18 @@ func FetchEvents(
 	apiURL :=
 		"https://app.ticketmaster.com/discovery/v2/events.json?" + params.Encode()
 
-	response, err :=
-		http.Get(apiURL)
+	req, err := http.NewRequestWithContext(
+		ctx,
+		"GET",
+		apiURL,
+		nil,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := HTTPClient.Do(req)
 
 	if err != nil {
 
@@ -184,9 +198,13 @@ func FetchEvents(
 type TicketmasterProvider struct{}
 
 func (t TicketmasterProvider) GetEventDetails(
+	ctx context.Context,
 	eventID string,
 ) (models.Event, error) {
 
-	return GetEventDetails(eventID)
+	return GetEventDetails(
+		ctx,
+		eventID,
+	)
 
 }

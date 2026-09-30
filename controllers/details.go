@@ -22,7 +22,7 @@ func (c *DetailsController) Get() {
 
 	}
 
-	event, err := services.GetEventDetails(eventID)
+	event, err := services.GetEventDetails(c.Ctx.Request.Context(), eventID)
 
 	if err != nil {
 

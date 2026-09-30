@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -45,7 +46,10 @@ type ticketmasterEventDetailResponse struct {
 	} `json:"_embedded"`
 }
 
-func GetEventDetails(eventID string) (models.Event, error) {
+func GetEventDetails(
+	ctx context.Context,
+	eventID string,
+) (models.Event, error) {
 
 	var event models.Event
 
@@ -81,7 +85,7 @@ func GetEventDetails(eventID string) (models.Event, error) {
 
 	req.URL.RawQuery = query.Encode()
 
-	response, err := HTTPClient.Do(req)
+	response, err := HTTPClient.Do(req.WithContext(ctx))
 
 	if err != nil {
 

@@ -14,7 +14,7 @@
 
 {{end}}
 
-<section class="mb-12">
+<section class="m-10 px-20">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
             <p class="text-blue-600 font-semibold uppercase tracking-wide text-sm">Events</p>
@@ -30,13 +30,13 @@
 
 {{if .Error}}
 
-<div class="bg-red-100 text-red-700 p-5 rounded-2xl mb-10">{{.Error}}</div>
+<div class="bg-red-100 text-red-700 p-20 rounded-2xl mb-10">{{.Error}}</div>
 
 {{end}}
 
 <!-- MUSIC EVENTS -->
 
-<section class="mb-16">
+<section class="lg:m-10 lg:px-20">
     <div class="flex items-center gap-3 mb-8">
         <div class="text-3xl">🎵</div>
 
@@ -54,7 +54,7 @@
 
 <!-- SPORTS EVENTS -->
 
-<section class="mb-16">
+<section class="mb-16 lg:m-10 lg:px-20">
     <div class="flex items-center gap-3 mb-8">
         <div class="text-3xl">🏟️</div>
 

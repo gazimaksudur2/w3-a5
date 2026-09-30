@@ -1,97 +1,73 @@
 package services
 
 import (
+	"context"
+
+	"golang.org/x/sync/errgroup"
+
 	"event-explorer/models"
 )
 
-type EventResult struct {
-	Category string
-
-	Events []models.Event
-
-	Err error
-}
-
 func GetCityEvents(
+	ctx context.Context,
 	provider EventProvider,
 	city string,
 	country string,
 ) (models.EventResponse, error) {
 
-	resultChannel :=
-		make(chan EventResult, 2)
+	var response models.EventResponse
 
-	go func() {
+	g, ctx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
 
 		events, err :=
-			FetchEvents(
+			provider.FetchEvents(
+				ctx,
 				city,
 				country,
 				"Music",
 			)
 
-		resultChannel <- EventResult{
+		if err != nil {
+			response.Errors =
+				append(response.Errors, err)
 
-			Category: "Music",
-
-			Events: events,
-
-			Err: err,
+			return nil
 		}
 
-	}()
+		response.Music = events
 
-	go func() {
+		return nil
+
+	})
+
+	g.Go(func() error {
 
 		events, err :=
-			FetchEvents(
+			provider.FetchEvents(
+				ctx,
 				city,
 				country,
 				"Sports",
 			)
 
-		resultChannel <- EventResult{
-
-			Category: "Sports",
-
-			Events: events,
-
-			Err: err,
-		}
-
-	}()
-
-	response :=
-		models.EventResponse{}
-
-	for i := 0; i < 2; i++ {
-
-		result :=
-			<-resultChannel
-
-		if result.Err != nil {
+		if err != nil {
 
 			response.Errors =
-				append(response.Errors, result.Err)
+				append(response.Errors, err)
 
-			continue
-
+			return nil
 		}
 
-		switch result.Category {
+		response.Sports = events
 
-		case "Music":
+		return nil
 
-			response.Music = result.Events
+	})
 
-		case "Sports":
+	err := g.Wait()
 
-			response.Sports = result.Events
-
-		}
-
-	}
-
-	return response, nil
+	return response, err
 
 }
