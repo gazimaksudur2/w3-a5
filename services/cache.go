@@ -1,6 +1,7 @@
 package services
 
 import (
+	"log"
 	"sync"
 	"time"
 
@@ -8,61 +9,118 @@ import (
 )
 
 type CacheItem struct {
-	Events []models.Event
-
+	Events    []models.Event
 	ExpiresAt time.Time
 }
 
-var eventCache = make(map[string]CacheItem)
-
-var cacheMutex sync.RWMutex
+type EventCache struct {
+	items map[string]CacheItem
+	mutex sync.RWMutex
+}
 
 const cacheDuration = 5 * time.Minute
 
-func GetCachedEvents(key string) ([]models.Event, bool) {
+func NewEventCache() *EventCache {
 
-	cacheMutex.RLock()
+	cache := &EventCache{
+		items: make(map[string]CacheItem),
+	}
 
-	item, exists := eventCache[key]
+	go cache.cleanup()
 
-	cacheMutex.RUnlock()
+	return cache
+}
+
+func (c *EventCache) Get(key string) ([]models.Event, bool) {
+
+	c.mutex.RLock()
+
+	item, exists := c.items[key]
+
+	c.mutex.RUnlock()
 
 	if !exists {
-
 		return nil, false
-
 	}
 
 	if time.Now().After(item.ExpiresAt) {
 
-		cacheMutex.Lock()
-
-		delete(eventCache, key)
-
-		cacheMutex.Unlock()
+		c.Delete(key)
 
 		return nil, false
-
 	}
 
-	return item.Events, true
+	log.Printf(
+		"cache hit: %s",
+		key,
+	)
 
+	return item.Events, true
 }
 
-func SetCachedEvents(
+func (c *EventCache) Set(
 	key string,
 	events []models.Event,
 ) {
 
-	cacheMutex.Lock()
+	c.mutex.Lock()
 
-	eventCache[key] = CacheItem{
+	c.items[key] = CacheItem{
 
 		Events: events,
 
 		ExpiresAt: time.Now().Add(cacheDuration),
 	}
 
-	cacheMutex.Unlock()
+	c.mutex.Unlock()
+
+}
+
+func (c *EventCache) Delete(key string) {
+
+	c.mutex.Lock()
+
+	delete(
+		c.items,
+		key,
+	)
+
+	c.mutex.Unlock()
+
+}
+
+func (c *EventCache) cleanup() {
+
+	ticker := time.NewTicker(
+		time.Minute,
+	)
+
+	for range ticker.C {
+
+		now := time.Now()
+
+		c.mutex.Lock()
+
+		for key, item := range c.items {
+
+			if now.After(item.ExpiresAt) {
+
+				delete(
+					c.items,
+					key,
+				)
+
+				log.Printf(
+					"cache expired: %s",
+					key,
+				)
+
+			}
+
+		}
+
+		c.mutex.Unlock()
+
+	}
 
 }

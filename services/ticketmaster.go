@@ -65,8 +65,7 @@ func FetchEvents(
 	key :=
 		city + "_" + country + "_" + category
 
-	cached, ok :=
-		GetCachedEvents(key)
+	cached, ok := EventCacheInstance.Get(key)
 
 	if ok {
 
@@ -176,10 +175,7 @@ func FetchEvents(
 
 	}
 
-	SetCachedEvents(
-		key,
-		events,
-	)
+	EventCacheInstance.Set(key, events)
 
 	return events, nil
 
