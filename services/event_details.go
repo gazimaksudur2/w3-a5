@@ -60,7 +60,8 @@ func GetEventDetails(
 	}
 
 	apiURL := fmt.Sprintf(
-		"https://app.ticketmaster.com/discovery/v2/events/%s.json",
+		"%s/events/%s.json",
+		TicketmasterBaseURL,
 		url.PathEscape(eventID),
 	)
 

@@ -15,6 +15,8 @@ import (
 	"event-explorer/models"
 )
 
+var TicketmasterBaseURL = "https://app.ticketmaster.com/discovery/v2"
+
 type ticketmasterResponse struct {
 	Embedded struct {
 		Events []struct {
@@ -105,8 +107,7 @@ func FetchEvents(
 		"6",
 	)
 
-	apiURL :=
-		"https://app.ticketmaster.com/discovery/v2/events.json?" + params.Encode()
+	apiURL := TicketmasterBaseURL + "/events.json?" + params.Encode()
 
 	req, err := http.NewRequestWithContext(
 		ctx,

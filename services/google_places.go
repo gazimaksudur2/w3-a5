@@ -12,6 +12,8 @@ import (
 	"event-explorer/models"
 )
 
+var GooglePlacesBaseURL = "https://places.googleapis.com"
+
 func Autocomplete(
 	input string,
 	sessionToken string,
@@ -52,7 +54,7 @@ func Autocomplete(
 
 	req, err := http.NewRequest(
 		"POST",
-		"https://places.googleapis.com/v1/places:autocomplete",
+		GooglePlacesBaseURL+"/v1/places:autocomplete",
 		bytes.NewBuffer(jsonBody),
 	)
 
@@ -138,7 +140,7 @@ func GetPlaceDetails(
 
 	var location models.Location
 
-	apiURL := "https://places.googleapis.com/v1/places/" + url.PathEscape(placeID)
+	apiURL := GooglePlacesBaseURL + "/v1/places/" + url.PathEscape(placeID)
 
 	if sessionToken != "" {
 

@@ -91,35 +91,48 @@ func (c *EventCache) Delete(key string) {
 
 func (c *EventCache) cleanup() {
 
-	ticker := time.NewTicker(
-		time.Minute,
-	)
+	ticker :=
+		time.NewTicker(
+			time.Minute,
+		)
+
+	defer ticker.Stop()
 
 	for range ticker.C {
 
-		now := time.Now()
+		c.removeExpired(
+			time.Now(),
+		)
 
-		c.mutex.Lock()
+	}
 
-		for key, item := range c.items {
+}
 
-			if now.After(item.ExpiresAt) {
+func (c *EventCache) removeExpired(
+	now time.Time,
+) {
 
-				delete(
-					c.items,
-					key,
-				)
+	c.mutex.Lock()
 
-				log.Printf(
-					"cache expired: %s",
-					key,
-				)
+	defer c.mutex.Unlock()
 
-			}
+	for key, item := range c.items {
+
+		if now.After(
+			item.ExpiresAt,
+		) {
+
+			delete(
+				c.items,
+				key,
+			)
+
+			log.Printf(
+				"cache expired: %s",
+				key,
+			)
 
 		}
-
-		c.mutex.Unlock()
 
 	}
 
