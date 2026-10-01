@@ -20,7 +20,6 @@ func (c *EventController) Get() {
 		c.Data["Error"] = "Please select a city"
 		c.TplName = "listing.tpl"
 		return
-
 	}
 
 	provider := services.TicketmasterProvider{}

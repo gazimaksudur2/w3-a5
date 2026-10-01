@@ -40,4 +40,9 @@ func init() {
 		&controllers.RedirectController{},
 	)
 
+	beego.Router(
+		"/cache-invalidate",
+		&controllers.CacheController{},
+		"get:Invalidate",
+	)
 }

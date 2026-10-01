@@ -190,7 +190,7 @@ func FetchEvents(
 
 	}
 
-	EventCacheInstance.Set(key, events)
+	EventCacheInstance.Set(key, city, country, category, events)
 
 	return events, nil
 
@@ -207,5 +207,4 @@ func (t TicketmasterProvider) GetEventDetails(
 		ctx,
 		eventID,
 	)
-
 }

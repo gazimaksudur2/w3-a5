@@ -1,24 +1,23 @@
 # 🎟 Event Explorer
 
-Event Explorer is a Go-based web application for discovering upcoming events by city. It uses Google Places for location search and Ticketmaster API for event data.
+Event Explorer is a Go-based web application for discovering upcoming events by city.  
+It uses Google Places API for location search and Ticketmaster API for event data.
 
-Built with Go, Beego, REST APIs, and server-side templates.
+Built with Go, Beego, REST APIs, goroutines, in-memory caching, and server-side templates.
 
 ---
 
-## Features
+# Features
 
-- 🌎 City search with Google Places API
+- 🌎 City search using Google Places API
 - 🎫 Music and sports event discovery
-- ⚡ Concurrent event fetching with goroutines
-- 💾 In-memory caching for API responses
+- ⚡ Concurrent event fetching using goroutines
+- 💾 In-memory event caching with manual invalidation
 - 🧪 Table-driven unit tests with mocked API servers
 
 ---
 
 # Tech Stack
-
-## Backend
 
 | Technology | Purpose |
 |---|---|
@@ -26,27 +25,23 @@ Built with Go, Beego, REST APIs, and server-side templates.
 | Beego | Web framework |
 | REST APIs | External communication |
 | Goroutines | Concurrent processing |
-| In-memory Cache | API optimization |
+| In-memory Cache | API response optimization |
 
-## External Services
 
-| Service | Purpose |
-|---|---|
-| Google Places API | Location search |
-| Ticketmaster API | Event data |
+---
 
 # Project Structure
 
 ```
 event-explorer/
 
-├── config/          # Environment configuration
-├── controllers/     # HTTP request handlers
-├── models/          # Data structures
-├── services/        # Business logic and API integrations
-├── routers/         # Application routes
-├── views/           # HTML templates
-├── static/          # CSS and JavaScript files
+├── config/          # Configuration
+├── controllers/     # HTTP handlers
+├── models/          # Data models
+├── services/        # Business logic and APIs
+├── routers/         # Route definitions
+├── views/           # Templates
+├── static/          # Frontend assets
 ├── main.go
 └── go.mod
 ```
@@ -58,14 +53,12 @@ event-explorer/
 ## Requirements
 
 - Go 1.26+
-- Google Places API key
-- Ticketmaster API key
+- Google Places API Key
+- Ticketmaster API Key
 
----
+## Environment Variables
 
-## Environment Configuration
-
-Create a `.env` file in the project root:
+Create `.env`:
 
 ```env
 GOOGLE_API_KEY=your_google_places_api_key
@@ -76,31 +69,23 @@ TICKETMASTER_API_KEY=your_ticketmaster_api_key
 
 # Installation
 
-Clone the repository:
-
 ```bash
 git clone https://github.com/gazimaksudur2/w3-a5
 
 cd event-explorer
-```
 
-Install dependencies:
-
-```bash
 go mod tidy
 ```
 
 ---
 
-# Running the Application
-
-Start the server:
+# Running Application
 
 ```bash
 go run .
 ```
 
-Application runs on:
+Application:
 
 ```
 http://localhost:8080
@@ -108,12 +93,18 @@ http://localhost:8080
 
 ---
 
-# Routes
+# API Routes
+
+Base URL:
+
+```
+http://localhost:8080
+```
 
 ## Home
 
-```
-GET /
+```http
+GET http://localhost:8080/
 ```
 
 Displays the event search page.
@@ -122,11 +113,11 @@ Displays the event search page.
 
 ## Search Events
 
-```
-GET /events
+```http
+GET http://localhost:8080/events
 ```
 
-Parameters:
+Query Parameters:
 
 ```
 city
@@ -136,45 +127,111 @@ countryCode
 Example:
 
 ```
-/events?city=Toronto&countryCode=CA
+http://localhost:8080/events?city=Toronto&countryCode=CA
 ```
 
 ---
 
 ## Event Details
 
-```
-GET /events/{eventId}
+```http
+GET http://localhost:8080/events/{eventId}
 ```
 
-Displays detailed event information.
+Example:
+
+```
+http://localhost:8080/events/G6vYZ9xxx
+```
 
 ---
 
-## Location APIs
+## Location Autocomplete
 
-Autocomplete:
-
-```
-GET /api/locations/autocomplete
+```http
+GET http://localhost:8080/api/locations/autocomplete
 ```
 
-Parameters:
+Query Parameters:
 
 ```
 input
 sessionToken
 ```
 
-Location details:
+Example:
 
 ```
-GET /api/locations/{placeId}
+http://localhost:8080/api/locations/autocomplete?input=Toronto
 ```
 
 ---
 
-# Running Tests
+## Location Details
+
+```http
+GET http://localhost:8080/api/locations/{placeId}
+```
+
+Example:
+
+```
+http://localhost:8080/api/locations/ChIJ...
+```
+
+---
+
+# Cache Invalidation Routes
+
+The cache can be manually invalidated using:
+
+## Clear Entire Cache
+
+```http
+GET http://localhost:8080/cache-invalidate
+```
+
+---
+
+## Clear By Category
+
+```http
+GET http://localhost:8080/cache-invalidate?category=Music
+```
+
+or
+
+```
+http://localhost:8080/cache-invalidate?category=Sports
+```
+
+---
+
+## Clear By City
+
+```http
+GET http://localhost:8080/cache-invalidate?city=Toronto
+```
+
+---
+
+## Clear By Country
+
+```http
+GET http://localhost:8080/cache-invalidate?country=CA
+```
+
+---
+
+## Clear Using Multiple Filters
+
+```http
+GET http://localhost:8080/cache-invalidate?city=Toronto&country=CA&category=Music
+```
+
+---
+
+# Testing
 
 Run all tests:
 
@@ -182,16 +239,17 @@ Run all tests:
 go test ./...
 ```
 
-Run tests with detailed output:
+Verbose output:
 
 ```bash
 go test ./... -v
 ```
 
-The project uses:
+Testing includes:
+
 - Table-driven unit tests
-- Mock HTTP servers for API testing
-- Service-level testing with interfaces
+- Mock HTTP servers
+- Service layer testing
 
 ---
 
@@ -200,15 +258,13 @@ The project uses:
 ```
 Browser
    |
-   |
 Controllers
-   |
    |
 Services
    |
-   +------------+
-   |            |
-Google API   Ticketmaster API
+   +----------------+
+   |                |
+Google API     Ticketmaster API
    |
 Models
    |
