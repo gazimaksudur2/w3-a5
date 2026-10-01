@@ -1,114 +1,18 @@
 # 🎟 Event Explorer
 
-Event Explorer is a web application that helps users discover upcoming events in their selected city. Users can search for cities using Google Places autocomplete, select a location, and explore available music and sports events powered by the Ticketmaster API.
+Event Explorer is a Go-based web application for discovering upcoming events by city. It uses Google Places for location search and Ticketmaster API for event data.
 
-The application is built with Go and Beego, with a lightweight Tailwind CSS-based frontend.
-
----
-
-# Features
-
-## 🌎 City Search with Google Places API
-
-- Real-time city autocomplete suggestions
-- Uses Google Places API (New)
-- Retrieves selected location details using place ID
-- Automatically extracts:
-  - City name
-  - Two-letter country code
-
-Flow:
-
-```
-User enters city
-        |
-        ↓
-Google Places Autocomplete API
-        |
-        ↓
-Select location
-        |
-        ↓
-Google Place Details API
-        |
-        ↓
-City + Country Code
-```
+Built with Go, Beego, REST APIs, and server-side templates.
 
 ---
 
-## 🎫 Event Discovery
+## Features
 
-Users can search events based on:
-
-- City
-- Country code
-
-The application retrieves:
-
-- Music events
-- Sports events
-
-from the Ticketmaster Discovery API.
-
----
-
-## ⚡ Concurrent Event Fetching
-
-Music and sports events are fetched concurrently using Go goroutines.
-
-Architecture:
-
-```
-                User Request
-                     |
-                     |
-              Event Controller
-                     |
-             Event Service Layer
-              /              \
-             /                \
-        Music API          Sports API
-             \                /
-              \              /
-              Event Response
-```
-
-This reduces waiting time compared with sequential API calls.
-
----
-
-## 🚀 Event Details
-
-Users can view:
-
-- Event name
-- Event image
-- Date
-- Venue
-- Description
-- Ticket purchase link
-
----
-
-## 💾 Event Caching
-
-The application includes an in-memory cache system.
-
-Cached data:
-
-- City
-- Country
-- Category
-- Events
-
-Cache duration:
-
-```
-5 minutes
-```
-
-This reduces unnecessary Ticketmaster API requests.
+- 🌎 City search with Google Places API
+- 🎫 Music and sports event discovery
+- ⚡ Concurrent event fetching with goroutines
+- 💾 In-memory caching for API responses
+- 🧪 Table-driven unit tests with mocked API servers
 
 ---
 
@@ -118,176 +22,44 @@ This reduces unnecessary Ticketmaster API requests.
 
 | Technology | Purpose |
 |---|---|
-| Go | Backend programming language |
+| Go | Backend development |
 | Beego | Web framework |
-| REST APIs | External service communication |
-| Goroutines | Concurrent API calls |
+| REST APIs | External communication |
+| Goroutines | Concurrent processing |
+| In-memory Cache | API optimization |
 
----
+## External Services
 
-## Frontend
-
-| Technology | Purpose |
+| Service | Purpose |
 |---|---|
-| HTML Templates | Server-side rendering |
-| Tailwind CSS | UI styling |
-| JavaScript | Autocomplete interaction |
+| Google Places API | Location search |
+| Ticketmaster API | Event data |
 
----
-
-## External APIs
-
-### Google Places API (New)
-
-Used for:
-
-- City autocomplete
-- Place details lookup
-
-Endpoints:
-
-```
-POST /v1/places:autocomplete
-
-GET /v1/places/{placeId}
-```
-
----
-
-### Ticketmaster Discovery API
-
-Used for:
-
-- Music event search
-- Sports event search
-- Event details retrieval
-
----
-
-# Project Architecture
+# Project Structure
 
 ```
 event-explorer/
 
-│
-├── config/
-│   └── config.go
-│
-├── controllers/
-│   ├── api.go
-│   ├── event.go
-│   ├── details.go
-│   └── home.go
-│
-├── models/
-│   ├── event.go
-│   ├── location.go
-│   └── api.go
-│
-├── services/
-│   ├── google_places.go
-│   ├── ticketmaster.go
-│   ├── event_service.go
-│   ├── event_details.go
-│   ├── cache.go
-│   └── http_client.go
-│
-├── routers/
-│   └── router.go
-│
-├── static/
-│   ├── css/
-│   └── js/
-│
-├── views/
-│   ├── home.tpl
-│   ├── listing.tpl
-│   ├── details.tpl
-│   └── partials/
-│
+├── config/          # Environment configuration
+├── controllers/     # HTTP request handlers
+├── models/          # Data structures
+├── services/        # Business logic and API integrations
+├── routers/         # Application routes
+├── views/           # HTML templates
+├── static/          # CSS and JavaScript files
 ├── main.go
 └── go.mod
 ```
 
 ---
 
-# Application Flow
-
-```
-                Browser
-
-                   |
-                   |
-
-              Home Page
-
-                   |
-                   |
-
-        Google Places Autocomplete
-
-                   |
-                   |
-
-          Selected Place ID
-
-                   |
-                   |
-
-        Google Place Details API
-
-                   |
-                   |
-
-        City + Country Code
-
-                   |
-                   |
-
-          Event Controller
-
-                   |
-                   |
-
-          Ticketmaster API
-
-                   |
-                   |
-
-        Music + Sports Events
-
-                   |
-                   |
-
-             Event Listing
-
-                   |
-                   |
-
-             Event Details
-```
-
----
-
-# Installation and Setup
+# Setup
 
 ## Requirements
 
-Install:
-
-- Go 1.25+
-- Git
-
-
----
-
-## Clone Repository
-
-```bash
-git clone https://github.com/gazimaksudur2/w3-a5.git
-
-cd event-explorer
-```
+- Go 1.26+
+- Google Places API key
+- Ticketmaster API key
 
 ---
 
@@ -295,15 +67,22 @@ cd event-explorer
 
 Create a `.env` file in the project root:
 
-```
+```env
 GOOGLE_API_KEY=your_google_places_api_key
-
 TICKETMASTER_API_KEY=your_ticketmaster_api_key
 ```
 
 ---
 
-# Running the Application
+# Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/gazimaksudur2/w3-a5
+
+cd event-explorer
+```
 
 Install dependencies:
 
@@ -311,13 +90,17 @@ Install dependencies:
 go mod tidy
 ```
 
-Run:
+---
+
+# Running the Application
+
+Start the server:
 
 ```bash
 go run .
 ```
 
-Application will start at:
+Application runs on:
 
 ```
 http://localhost:8080
@@ -325,21 +108,19 @@ http://localhost:8080
 
 ---
 
-# API Routes
+# Routes
 
-## Web Routes
-
-### Home
+## Home
 
 ```
 GET /
 ```
 
-Displays the city search page.
+Displays the event search page.
 
 ---
 
-### Search Events
+## Search Events
 
 ```
 GET /events
@@ -360,17 +141,19 @@ Example:
 
 ---
 
-### Event Details
+## Event Details
 
 ```
 GET /events/{eventId}
 ```
 
+Displays detailed event information.
+
 ---
 
-## Internal API Routes
+## Location APIs
 
-### City Autocomplete
+Autocomplete:
 
 ```
 GET /api/locations/autocomplete
@@ -383,71 +166,51 @@ input
 sessionToken
 ```
 
----
-
-### Place Details
+Location details:
 
 ```
 GET /api/locations/{placeId}
 ```
 
-Parameters:
+---
 
-```
-sessionToken
-```
+# Running Tests
 
-Returns:
+Run all tests:
 
-```json
-{
-    "city":"Toronto",
-    "countryCode":"CA"
-}
+```bash
+go test ./...
 ```
 
----
+Run tests with detailed output:
 
-# Environment Variables
+```bash
+go test ./... -v
+```
 
-| Variable | Description |
-|-|-|
-| GOOGLE_API_KEY | Google Places API key |
-| TICKETMASTER_API_KEY | Ticketmaster API key |
-
----
-
-# Current Development Status
-
-Completed:
-
-✅ Beego backend setup  
-✅ Ticketmaster event integration  
-✅ Google Places city autocomplete  
-✅ Place details lookup  
-✅ City and country extraction  
-✅ Concurrent event fetching  
-✅ Event caching  
-✅ Event details page  
-✅ Tailwind UI integration  
-
+The project uses:
+- Table-driven unit tests
+- Mock HTTP servers for API testing
+- Service-level testing with interfaces
 
 ---
 
-# Future Improvements
+# Architecture Overview
 
-Planned improvements:
-
-- Better event card grid layout
-- Loading animations
-- Improved error handling
-- Persistent database storage
-- User accounts and favorites
-- Advanced event filtering
-- Deployment configuration
-
----
-
-# License
-
-This project is developed for educational and demonstration purposes.
+```
+Browser
+   |
+   |
+Controllers
+   |
+   |
+Services
+   |
+   +------------+
+   |            |
+Google API   Ticketmaster API
+   |
+Models
+   |
+Views
+```
