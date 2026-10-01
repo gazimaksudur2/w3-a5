@@ -19,7 +19,7 @@
         <div>
             <p class="text-blue-600 font-semibold uppercase tracking-wide text-sm">Events</p>
 
-            <h2 class="text-4xl md:text-5xl font-extrabold mt-2">Events in {{.City}}</h2>
+            <h2 class="text-4xl md:text-5xl font-extrabold mt-2">Events in <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{{.City}}</span></h2>
 
             <p class="mt-3 text-slate-500 text-lg">Discover concerts, sports and experiences happening nearby.</p>
         </div>

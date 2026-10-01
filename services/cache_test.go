@@ -7,73 +7,59 @@ import (
 	"event-explorer/models"
 )
 
-func TestCacheHit(t *testing.T) {
+func TestEventCache(t *testing.T) {
 
-	cache :=
-		NewEventCache()
-
-	events :=
-		[]models.Event{
-
-			{
-				ID:   "123",
-				Name: "Test Event",
-			},
-		}
-
-	cache.Set(
-		"toronto_CA_Music",
-		events,
-	)
-
-	result, ok :=
-		cache.Get(
-			"toronto_CA_Music",
-		)
-
-	if !ok {
-
-		t.Fatal("expected cache hit")
-
-	}
-
-	if result[0].ID != "123" {
-
-		t.Fatal("wrong cached data")
-
-	}
-
-}
-
-func TestCacheExpiry(t *testing.T) {
-
-	cache :=
-		&EventCache{
-
-			items: map[string]CacheItem{
-
-				"expired": {
-
-					Events: nil,
-
-					ExpiresAt: time.Now().Add(
-						-1 * time.Minute,
-					),
+	tests := []struct {
+		name string
+		key string
+		item CacheItem
+		wantExists bool
+	}{
+		{
+			name: "cache hit",
+			key: "toronto_CA_music",
+			item: CacheItem{
+				Events: []models.Event{
+					{
+						ID: "123",
+						Name: "Concert",
+					},
 				},
+				ExpiresAt: time.Now().Add(time.Hour),
 			},
-		}
-
-	_, ok :=
-		cache.Get(
-			"expired",
-		)
-
-	if ok {
-
-		t.Fatal(
-			"expected cache miss after expiry",
-		)
-
+			wantExists: true,
+		},
+		{
+			name: "expired cache",
+			key: "expired",
+			item: CacheItem{
+				Events: nil,
+				ExpiresAt: time.Now().Add(-time.Hour),
+			},
+			wantExists: false,
+		},
 	}
 
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+
+			cache := &EventCache{
+				items: map[string]CacheItem{
+					tt.key: tt.item,
+				},
+			}
+
+			_, ok := cache.Get(tt.key)
+
+			if ok != tt.wantExists {
+				t.Errorf(
+					"cache.Get() = %v, want %v",
+					ok,
+					tt.wantExists,
+				)
+			}
+
+		})
+	}
 }

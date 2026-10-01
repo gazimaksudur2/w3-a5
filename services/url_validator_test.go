@@ -2,36 +2,55 @@ package services
 
 import "testing"
 
-func TestValidTicketURL(t *testing.T) {
+func TestIsValidTicketURL(t *testing.T) {
 
-	valid :=
-		IsValidTicketURL(
-			"https://www.ticketmaster.com/event123",
-		)
-
-	if !valid {
-
-		t.Fatal(
-			"expected valid ticket URL",
-		)
-
+	tests := []struct {
+		name string
+		url  string
+		want bool
+	}{
+		{
+			name: "valid ticketmaster com",
+			url:  "https://www.ticketmaster.com/event123",
+			want: true,
+		},
+		{
+			name: "valid ticketmaster ca",
+			url:  "https://ticketmaster.ca/event123",
+			want: true,
+		},
+		{
+			name: "invalid http scheme",
+			url:  "http://www.ticketmaster.com/event123",
+			want: false,
+		},
+		{
+			name: "invalid external domain",
+			url:  "https://evil.com/fake",
+			want: false,
+		},
+		{
+			name: "invalid empty url",
+			url:  "",
+			want: false,
+		},
 	}
 
-}
+	for _, tt := range tests {
 
-func TestInvalidTicketURL(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 
-	invalid :=
-		IsValidTicketURL(
-			"https://evil.com/fake",
-		)
+			got := IsValidTicketURL(tt.url)
 
-	if invalid {
+			if got != tt.want {
+				t.Errorf(
+					"IsValidTicketURL(%q) = %v, want %v",
+					tt.url,
+					got,
+					tt.want,
+				)
+			}
 
-		t.Fatal(
-			"expected invalid ticket URL",
-		)
-
+		})
 	}
-
 }

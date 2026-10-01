@@ -2,133 +2,101 @@ package services
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"testing"
 
 	"event-explorer/models"
 )
 
-type MockEventProvider struct{}
+type TableProvider struct {
+	failCategory string
+}
 
-func (m MockEventProvider) FetchEvents(
+func (p TableProvider) FetchEvents(
 	ctx context.Context,
 	city string,
 	country string,
 	category string,
 ) ([]models.Event, error) {
 
-	return []models.Event{
+	if category == p.failCategory {
+		return nil, errors.New("api failed")
+	}
 
+	return []models.Event{
 		{
 			ID:   "1",
 			Name: category + " Event",
 		},
 	}, nil
-
 }
 
-func (m MockEventProvider) GetEventDetails(
+func (p TableProvider) GetEventDetails(
 	ctx context.Context,
 	id string,
 ) (models.Event, error) {
 
-	return models.Event{
-
-		ID: id,
-	}, nil
-
+	return models.Event{}, nil
 }
 
-func TestGetCityEventsSuccess(
-	t *testing.T,
-) {
+func TestGetCityEvents(t *testing.T) {
 
-	provider :=
-		MockEventProvider{}
-
-	result, err :=
-		GetCityEvents(
-			context.Background(),
-			provider,
-			"Toronto",
-			"CA",
-		)
-
-	if err != nil {
-
-		t.Fatal(err)
-
+	tests := []struct {
+		name       string
+		provider   EventProvider
+		wantErrors int
+		wantMusic  bool
+		wantSports bool
+	}{
+		{
+			name:       "successful fetching",
+			provider:   TableProvider{},
+			wantErrors: 0,
+			wantMusic:  true,
+			wantSports: true,
+		},
+		{
+			name: "music api failure",
+			provider: TableProvider{
+				failCategory: "Music",
+			},
+			wantErrors: 1,
+			wantSports: true,
+		},
 	}
 
-	if len(result.Music) == 0 {
+	for _, tt := range tests {
 
-		t.Fatal(
-			"music events missing",
-		)
+		t.Run(tt.name, func(t *testing.T) {
 
-	}
+			result, err := GetCityEvents(
+				context.Background(),
+				tt.provider,
+				"Toronto",
+				"CA",
+			)
 
-	if len(result.Sports) == 0 {
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		t.Fatal(
-			"sports events missing",
-		)
+			if len(result.Errors) != tt.wantErrors {
+				t.Errorf(
+					"errors=%d want=%d",
+					len(result.Errors),
+					tt.wantErrors,
+				)
+			}
 
-	}
+			if tt.wantMusic && len(result.Music) == 0 {
+				t.Error("music events missing")
+			}
 
-}
+			if tt.wantSports && len(result.Sports) == 0 {
+				t.Error("sports events missing")
+			}
 
-type FailingEventProvider struct{}
-
-func (f FailingEventProvider) FetchEvents(
-	ctx context.Context,
-	city string,
-	country string,
-	category string,
-) ([]models.Event, error) {
-
-	return nil, fmt.Errorf("api failure")
-
-}
-
-func (f FailingEventProvider) GetEventDetails(
-	ctx context.Context,
-	id string,
-) (models.Event, error) {
-
-	return models.Event{}, fmt.Errorf("event failure")
-
-}
-
-func TestGetCityEventsFailure(
-	t *testing.T,
-) {
-
-	provider :=
-		FailingEventProvider{}
-
-	result, err :=
-		GetCityEvents(
-			context.Background(),
-			provider,
-			"Toronto",
-			"CA",
-		)
-
-	if err != nil {
-
-		t.Fatal(
-			"service should keep partial failures",
-		)
-
-	}
-
-	if len(result.Errors) == 0 {
-
-		t.Fatal(
-			"expected errors",
-		)
-
+		})
 	}
 
 }
